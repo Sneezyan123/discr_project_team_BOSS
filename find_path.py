@@ -38,14 +38,17 @@ def dijkstra(adj_list: dict, start_v, end_v) -> float:
     return dist[end_v]
 
 
-def dijkstra_path(adj_list: dict, start_v, end_v) -> list:
+def dijkstra_path(adj_list: dict, start_v, end_v) -> tuple[int, list]:
     """
-    Returns the shortest path from `start_v` to `end_v`
+    Returns the shortest distance and path from `start_v` to `end_v`
 
     Args:
         adj_list (dict): adjecency list of format {vertex: [(vertex, weight)]}
         start_v (_type_): vertex
         end_v (_type_): vertex
+
+    Return:
+        shortest_distance path (tuple[int, list])
 
     >>> dijkstra_path({\
         1: [(2, 2), (3, 5), (4, 10)],\
@@ -53,7 +56,7 @@ def dijkstra_path(adj_list: dict, start_v, end_v) -> list:
         3: [(4, 1)],\
         4: []\
     }, 1, 4)
-    [1, 2, 3, 4]
+    (5, [1, 2, 3, 4])
     """
     p_queue = PriorityQueue()
     dist = {key: (float("inf"), None) for key in adj_list}
@@ -81,7 +84,7 @@ def dijkstra_path(adj_list: dict, start_v, end_v) -> list:
         prev_v = dist[prev_v][1]
 
     path = path[-1::-1]
-    return path
+    return shortest_distance, path
 
 
 
