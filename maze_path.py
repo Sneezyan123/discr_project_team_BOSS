@@ -4,7 +4,9 @@ from pprint import pprint
 import os
 
 GREEN = '\033[0;32m'
-DARK_GRAY = "\033[1;30m"
+LIGHT_GRAY = "\033[1;30m"
+DARK_GRAY = "\033[0;37m"
+RED = "\033[0;31m"
 DEFAULT = '\033[0m'
 
 parser = argparse.ArgumentParser(description='finds shortest path in a maze')
@@ -109,19 +111,22 @@ def extract_maze(maze: list[list[str]]) -> tuple[list[list[str]], list[tuple[int
     return new_maze, points
 
 
-def print_maze(maze: list[list[str]], path: list[tuple[int, int]]) -> None:
+def print_maze(maze: list[list[str]], path: list[tuple[int, int]], start: tuple[int, int], end: tuple[int, int]) -> None:
     """
     Print maze
     :param maze: list[list[str]], maze represented by 0 and 1. 0 being the walls
     :param path: list[tuple[int, int]], shortest path from start_coord to finish_coord
+    :param start: tuple[int, int], start coordinate
+    :param end: tuple[int, int], end coordinate
     :return: None
     """
     path = set(path)
     os.system('cls' if os.name == 'nt' else 'clear')
-    print('\n'.join([''.join(f'{GREEN}██{DEFAULT}' if (y, x) in path else
-                             f'{DARK_GRAY}██{DEFAULT}' if cell == "1" else '  '
-                             for x, cell in enumerate(row)) for y, row in enumerate(maze)]))
-
+    print('\n'.join([''.join(f'{RED}██{DEFAULT}' if (y, x) == start else
+                            f'{RED}██{DEFAULT}' if (y, x) == end else
+                            f'{GREEN}██{DEFAULT}' if (y, x) in path else
+                            f'{LIGHT_GRAY}██{DEFAULT}' if cell == "1" else f'{DARK_GRAY}██{DEFAULT}'
+                            for x, cell in enumerate(row)) for y, row in enumerate(maze)]))\
 
 def random_points(points: list[tuple[int, int]]) -> tuple[tuple[int, int], tuple[int, int]]:
     """
@@ -131,7 +136,7 @@ def random_points(points: list[tuple[int, int]]) -> tuple[tuple[int, int], tuple
     """
     if len(points) == 2:
         return points[0], points[1]
-    return tuple(random.sample(points, k=2))
+    return tuple(random.sample(points, 2))
 
 
 def main(file_name: str) -> None:
@@ -143,7 +148,7 @@ def main(file_name: str) -> None:
     maze, points = extract_maze(read_file(args.maze))
     points = random_points(points)
     path = breadth_first_search(maze, points[0], points[1])
-    print_maze(maze, path)
+    print_maze(maze, path, points[0], points[1])
 
 
 if __name__ == "__main__":
