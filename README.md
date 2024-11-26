@@ -3,7 +3,7 @@
 ``$ python3 maze_path.py <file>``
 
 ### File with maze style:
-using breadth first search for finding the shortest way in maze.
+using breadth first search algorithm for finding the shortest way in maze.
 Mazes represented as 2-dimensional matrixes.
 Value "0" means wall.
 Value "1" means allowed path.
