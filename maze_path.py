@@ -1,5 +1,6 @@
 import argparse
 import random
+import time
 from pprint import pprint
 import os
 
@@ -22,10 +23,7 @@ def breadth_first_search(maze: list[list[str]], start_coord, finish_coord) -> li
     :param start_coord: tuple[int, int], start coordinate
     :param finish_coord: tuple[int, int], finish coordinate
     :return: list[tuple[int, int]], shortest path from start_coord to finish_coord
-    # >>> pprint(breadth_first_search([['0', '1', '1', '1', '0'], ['0', '0', '1', '1', '0'],\
-    # ['0', '1', '0', '1', '1'], ['0', '1', '0', '1', '0'], ['0', '1', '1', '1', '1'],\
-    # ['0', '1', '0', '0', '0']], (0, 1), (2, 1)))
-    >>> maze, points = extract_maze(read_file('maze.csv'))
+    >>> maze, points = extract_maze(read_file('maze2.csv'))
     >>> points = random_points(points)
     >>> pprint(breadth_first_search(maze, points[0], points[1]))
 
@@ -33,7 +31,13 @@ def breadth_first_search(maze: list[list[str]], start_coord, finish_coord) -> li
     queue = [(start_coord, [start_coord])]
     directions = [(-1, 0), (1, 0), (0, 1), (0, -1)]
     visited = [start_coord]
-    while True:
+    cycle = queue[-1]
+    while queue:
+        if cycle not in queue:
+            time.sleep(.1)
+            print_maze(maze, visited, [start_coord],
+                       [item[0] for item in queue] + [finish_coord])
+            cycle = queue[-1]
         coords, path = queue.pop(0)
         x, y = coords
         for dir_x, dir_y in directions:
@@ -49,6 +53,7 @@ def breadth_first_search(maze: list[list[str]], start_coord, finish_coord) -> li
                     return new_path
                 visited.append((new_x, new_y))
                 queue.append(((new_x, new_y), new_path))
+    return None
 
 
 def read_file(filename: str) -> list[list[str]]:
@@ -111,7 +116,8 @@ def extract_maze(maze: list[list[str]]) -> tuple[list[list[str]], list[tuple[int
     return new_maze, points
 
 
-def print_maze(maze: list[list[str]], path: list[tuple[int, int]], start: tuple[int, int], end: tuple[int, int]) -> None:
+def print_maze(maze: list[list[str]], path: list[tuple[int, int]], start: list[tuple[int, int]],
+               end: list[tuple[int, int]]) -> None:
     """
     Print maze
     :param maze: list[list[str]], maze represented by 0 and 1. 0 being the walls
@@ -121,12 +127,14 @@ def print_maze(maze: list[list[str]], path: list[tuple[int, int]], start: tuple[
     :return: None
     """
     path = set(path)
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print('\n'.join([''.join(f'{RED}██{DEFAULT}' if (y, x) == start else
-                            f'{RED}██{DEFAULT}' if (y, x) == end else
-                            f'{GREEN}██{DEFAULT}' if (y, x) in path else
-                            f'{LIGHT_GRAY}██{DEFAULT}' if cell == "1" else f'{DARK_GRAY}██{DEFAULT}'
-                            for x, cell in enumerate(row)) for y, row in enumerate(maze)]))\
+    # os.system('cls' if os.name == 'nt' else 'clear')
+    print('\033[200A\033[2K', end='')
+    print('\n'.join([''.join(f'{RED}██{DEFAULT}' if (y, x) in start else
+                             f'{RED}██{DEFAULT}' if (y, x) in end else
+                             f'{GREEN}██{DEFAULT}' if (y, x) in path else
+                             f'{LIGHT_GRAY}██{DEFAULT}' if cell == "1" else f'{DARK_GRAY}██{DEFAULT}'
+                             for x, cell in enumerate(row)) for y, row in enumerate(maze)]))
+
 
 def random_points(points: list[tuple[int, int]]) -> tuple[tuple[int, int], tuple[int, int]]:
     """
@@ -145,10 +153,14 @@ def main(file_name: str) -> None:
     :param file_name: name of file from which to read maze
     :return: None
     """
+    os.system('cls' if os.name == 'nt' else 'clear')
     maze, points = extract_maze(read_file(args.maze))
     points = random_points(points)
     path = breadth_first_search(maze, points[0], points[1])
-    print_maze(maze, path, points[0], points[1])
+    if path is None:
+        print('No path found')
+        return
+    print_maze(maze, path, [points[0]], [points[1]])
 
 
 if __name__ == "__main__":
