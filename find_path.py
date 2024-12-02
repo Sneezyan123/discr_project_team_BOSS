@@ -125,7 +125,7 @@ def A_star(maze: list[list[str]], \
 
                 q.put((dist_start+dist_finish, new_coord, new_path))
 
-    return path
+    return None
 
 
 
