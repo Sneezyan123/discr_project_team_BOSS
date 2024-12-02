@@ -3,6 +3,8 @@ import random
 import time
 from pprint import pprint
 import os
+from queue import PriorityQueue
+
 
 GREEN = '\033[0;32m'
 LIGHT_GRAY = "\033[1;30m"
@@ -54,6 +56,52 @@ def breadth_first_search(maze: list[list[str]], start_coord, finish_coord) -> li
                 visited.append((new_x, new_y))
                 queue.append(((new_x, new_y), new_path))
     return None
+
+def A_star(maze: list[list[str]], \
+    start_coord: tuple[int, int], finish_coord: tuple[int, int]) -> list[tuple[int, int]]:
+    """
+    A* algorithm
+
+    :param maze: list[list[str]], maze represented by 0 and 1. 0 being the walls
+    :param start_coord: tuple[int, int], start coordinate
+    :param finish_coord: tuple[int, int], finish coordinat
+    """
+    n = len(maze)
+    m = len(maze[0])
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    q = PriorityQueue()
+    #sum of distance from starting node and distance to finish node
+    q.put((0, start_coord, [start_coord]))
+    visited = []
+    while not q.empty():
+        _, coord, path = q.get()
+
+        time.sleep(.04)
+        print_maze(maze, visited, [start_coord],
+                    path + [finish_coord])
+
+        if coord == finish_coord:
+            return path
+
+        if coord in visited:
+            continue
+        visited.append(coord)
+
+        for d in directions:
+            new_coord = (coord[0] + d[0], coord[1] + d[1])
+            if 0 <= new_coord[0] < n and 0 <= new_coord[1] < m:
+                if maze[new_coord[0]][new_coord[1]] != "1":
+                    continue
+                dist_start = (new_coord[0]-start_coord[0])**2 + (new_coord[1]-start_coord[1])**2
+                dist_finish = (new_coord[0]-finish_coord[0])**2 + (new_coord[1]-finish_coord[1])**2
+                new_path = path[:]
+                new_path.append(new_coord)
+
+                q.put(((dist_finish, -dist_start), new_coord, new_path))
+
+    return None
+
 
 
 def read_file(filename: str) -> list[list[str]]:
@@ -156,7 +204,11 @@ def main(file_name: str) -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
     maze, points = extract_maze(read_file(args.maze))
     points = random_points(points)
-    path = breadth_first_search(maze, points[0], points[1])
+    algorithm = input("A* or BFS: ")
+    if algorithm == "BFS":
+        path = breadth_first_search(maze, points[0], points[1])
+    else:
+        path = A_star(maze, points[0], points[1])
     if path is None:
         print('No path found')
         return
