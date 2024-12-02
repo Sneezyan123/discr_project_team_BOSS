@@ -13,12 +13,15 @@ RED = "\033[0;31m"
 DEFAULT = '\033[0m'
 
 parser = argparse.ArgumentParser(description='finds shortest path in a maze')
+parser.add_argument('-a', '--a_star', action='store_true', help='use A*')
 parser.add_argument('maze', metavar='maze_file', type=str, help='file containing a maze')
 args = parser.parse_args()
 arg_maze = args.maze
+arg_a_star = args.a_star
 
 
-def breadth_first_search(maze: list[list[str]], start_coord, finish_coord) -> list[tuple[int, int]]:
+def breadth_first_search(maze: list[list[str]], start_coord, finish_coord)\
+        -> list[tuple[int, int]] | None:
     """
     BFS algorithm to find the shortest path in a maze from start_coord to finish_coord
     :param maze: list[list[str]], maze represented by 0 and 1. 0 being the walls
@@ -57,8 +60,9 @@ def breadth_first_search(maze: list[list[str]], start_coord, finish_coord) -> li
                 queue.append(((new_x, new_y), new_path))
     return None
 
-def A_star(maze: list[list[str]], \
-    start_coord: tuple[int, int], finish_coord: tuple[int, int]) -> list[tuple[int, int]]:
+
+def a_star(maze: list[list[str]], start_coord: tuple[int, int], finish_coord: tuple[int, int]) \
+        -> list[tuple[int, int]] | None:
     """
     A* algorithm
 
@@ -71,15 +75,14 @@ def A_star(maze: list[list[str]], \
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     q = PriorityQueue()
-    #sum of distance from starting node and distance to finish node
+    # Sum of distance from starting node and distance to finish node
     q.put((0, start_coord, [start_coord]))
     visited = []
     while not q.empty():
         _, coord, path = q.get()
 
         time.sleep(.04)
-        print_maze(maze, visited, [start_coord],
-                    path + [finish_coord])
+        print_maze(maze, visited, [start_coord], path + [finish_coord])
 
         if coord == finish_coord:
             return path
@@ -101,7 +104,6 @@ def A_star(maze: list[list[str]], \
                 q.put(((dist_finish, -dist_start), new_coord, new_path))
 
     return None
-
 
 
 def read_file(filename: str) -> list[list[str]]:
@@ -195,7 +197,7 @@ def random_points(points: list[tuple[int, int]]) -> tuple[tuple[int, int], tuple
     return tuple(random.sample(points, 2))
 
 
-def main(file_name: str) -> None:
+def main(file_name: str, use_a_star: bool) -> None:
     """
     Main function
     :param file_name: name of file from which to read maze
@@ -204,11 +206,10 @@ def main(file_name: str) -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
     maze, points = extract_maze(read_file(args.maze))
     points = random_points(points)
-    algorithm = input("A* or BFS: ")
-    if algorithm == "BFS":
-        path = breadth_first_search(maze, points[0], points[1])
+    if use_a_star:
+        path = a_star(maze, points[0], points[1])
     else:
-        path = A_star(maze, points[0], points[1])
+        path = breadth_first_search(maze, points[0], points[1])
     if path is None:
         print('No path found')
         return
@@ -216,4 +217,4 @@ def main(file_name: str) -> None:
 
 
 if __name__ == "__main__":
-    main(arg_maze)
+    main(arg_maze, arg_a_star)
