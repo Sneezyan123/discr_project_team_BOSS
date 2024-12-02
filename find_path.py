@@ -87,7 +87,45 @@ def dijkstra_path(adj_list: dict, start_v, end_v) -> tuple[int, list]:
     return shortest_distance, path
 
 
+def A_star(maze: list[list[str]], \
+    start_coord: tuple[int, int], finish_coord: tuple[int, int]) -> list[tuple[int, int]]:
+    """
+    A* algorithm
 
+    :param maze: list[list[str]], maze represented by 0 and 1. 0 being the walls
+    :param start_coord: tuple[int, int], start coordinate
+    :param finish_coord: tuple[int, int], finish coordinat
+    """
+    n = len(maze)
+    m = len(maze[0])
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    q = PriorityQueue()
+    #sum of distance from starting node and distance to finish node
+    q.put((0, start_coord, [start_coord]))
+    visited = []
+    while not q.empty():
+        _, coord, path = q.get()
+        if coord == finish_coord:
+            return path
+
+        if coord in visited:
+            continue
+        visited.append(coord)
+
+        for d in directions:
+            new_coord = (coord[0] + d[0], coord[1] + d[1])
+            if 0 <= new_coord[0] < n and 0 <= new_coord[1] < m:
+                if maze[new_coord[0]][new_coord[1]] != "1":
+                    continue
+                dist_start = (new_coord[0]-start_coord[0])**2 + (new_coord[1]-start_coord[1])**2
+                dist_finish = (new_coord[0]-finish_coord[0])**2 + (new_coord[1]-finish_coord[1])**2
+                new_path = path[:]
+                new_path.append(new_coord)
+
+                q.put((dist_start+dist_finish, new_coord, new_path))
+
+    return path
 
 
 
@@ -103,3 +141,11 @@ if __name__ == "__main__":
         3: [(4, 1)],
         4: []
     }, 1, 4))
+
+    print(A_star([['0', '1', '1', '1', '0'],
+                  ['0', '0', '1', '1', '0'],
+                  ['0', '1', '0', '1', '1'],
+                  ['0', '1', '0', '1', '0'],
+                  ['0', '1', '1', '1', '1'],
+                  ['0', '1', '0', '0', '0']],
+        (0, 1), (2, 1)))
