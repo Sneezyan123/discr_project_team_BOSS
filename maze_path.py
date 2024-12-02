@@ -204,7 +204,7 @@ def main(file_name: str, use_a_star: bool) -> None:
     :return: None
     """
     os.system('cls' if os.name == 'nt' else 'clear')
-    maze, points = extract_maze(read_file(args.maze))
+    maze, points = extract_maze(read_file(file_name))
     points = random_points(points)
     if use_a_star:
         path = a_star(maze, points[0], points[1])
