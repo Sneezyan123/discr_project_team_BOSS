@@ -102,10 +102,10 @@ def a_star(maze: list[list[str]], start_coord: tuple[int, int], finish_coord: tu
             if 0 <= new_coord[0] < n and 0 <= new_coord[1] < m:
                 if maze[new_coord[0]][new_coord[1]] != "1":
                     continue
-                dist_start = (new_coord[0]-start_coord[0])**2 + (new_coord[1]-start_coord[1])**2
-                dist_finish = (new_coord[0]-finish_coord[0])**2 + (new_coord[1]-finish_coord[1])**2
+                dist_start = len(path)+1
+                dist_finish = abs(new_coord[0]-finish_coord[0]) + abs(new_coord[1]-finish_coord[1])
 
-                heapq.heappush(q, ((dist_finish, -dist_start), new_coord, path+[new_coord]))
+                heapq.heappush(q, ((dist_finish+dist_start), new_coord, path+[new_coord]))
 
     return None
 
