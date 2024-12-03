@@ -3,7 +3,7 @@ import random
 import time
 from pprint import pprint
 import os
-from queue import PriorityQueue
+import heapq
 
 
 GREEN = '\033[0;32m'
@@ -74,12 +74,16 @@ def a_star(maze: list[list[str]], start_coord: tuple[int, int], finish_coord: tu
     m = len(maze[0])
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    q = PriorityQueue()
+    q = [(0, start_coord, [start_coord])]
     # Sum of distance from starting node and distance to finish node
-    q.put((0, start_coord, [start_coord]))
+    heapq.heapify(q)
     visited = []
-    while not q.empty():
-        _, coord, path = q.get()
+    while True:
+        try:
+            _, coord, path = heapq.heappop(q)
+        except IndexError:
+            break
+
 
         time.sleep(.04)
         print_maze(maze, visited, [start_coord], path + [finish_coord])
@@ -101,7 +105,7 @@ def a_star(maze: list[list[str]], start_coord: tuple[int, int], finish_coord: tu
                 dist_start = (new_coord[0]-start_coord[0])**2 + (new_coord[1]-start_coord[1])**2
                 dist_finish = (new_coord[0]-finish_coord[0])**2 + (new_coord[1]-finish_coord[1])**2
 
-                q.put(((dist_finish, -dist_start), new_coord, path+[new_coord]))
+                heapq.heappush(q, ((dist_finish, -dist_start), new_coord, path+[new_coord]))
 
     return None
 
