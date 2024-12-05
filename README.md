@@ -20,6 +20,7 @@ By default, uses breadth first search(BFS), optionally can be changed to A*.
 ### Report
 ## Breadth-first-search (BFS)
 > Artem Onyshchuk
+
 BFS algorithm can be used to find the shortest path between two points in graph or 2-dimensional matrix (our case).
 It explores each adjacent node step by step and stops when reaches final point.
 Program uses fundamental idea of queue, that works by principle: the first came - the first gone.
