@@ -80,3 +80,9 @@ Dark gray for walls
 Sets random start and end points from all possible
 #### ``main()``
 Main function. Clears the screen and calls all other functions
+
+> Arsen Botsko 
+#### ``print_maze()`` ###
+added color works, starting and finish points
+made Super_mazes
+different CLI work
