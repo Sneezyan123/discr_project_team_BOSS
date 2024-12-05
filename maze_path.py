@@ -12,12 +12,13 @@ DARK_GRAY = "\033[0;37m"
 RED = "\033[0;31m"
 DEFAULT = '\033[0m'
 
-parser = argparse.ArgumentParser(description='finds shortest path in a maze')
-parser.add_argument('-a', '--a_star', action='store_true', help='use A*')
-parser.add_argument('maze', metavar='maze_file', type=str, help='file containing a maze')
-args = parser.parse_args()
-arg_maze = args.maze
-arg_a_star = args.a_star
+
+def parse() -> tuple[bool, str]:
+    parser = argparse.ArgumentParser(description='finds shortest path in a maze')
+    parser.add_argument('-a', '--a_star', action='store_true', help='use A*')
+    parser.add_argument('maze', metavar='maze_file', type=str, help='file containing a maze')
+    args = parser.parse_args()
+    return args.a_star, args.maze
 
 
 def breadth_first_search(maze: list[list[str]], start_coord, finish_coord)\
@@ -39,7 +40,7 @@ def breadth_first_search(maze: list[list[str]], start_coord, finish_coord)\
     cycle = queue[-1]
     while queue:
         if cycle not in queue:
-            time.sleep(.1)
+            # time.sleep(.1)
             print_maze(maze, visited, [start_coord],
                        [item[0] for item in queue] + [finish_coord])
             cycle = queue[-1]
@@ -84,8 +85,7 @@ def a_star(maze: list[list[str]], start_coord: tuple[int, int], finish_coord: tu
         except IndexError:
             break
 
-
-        time.sleep(.04)
+        # time.sleep(.04)
         print_maze(maze, visited, [start_coord], path + [finish_coord])
 
         if coord == finish_coord:
@@ -201,13 +201,14 @@ def random_points(points: list[tuple[int, int]]) -> tuple[tuple[int, int], tuple
     return tuple(random.sample(points, 2))
 
 
-def main(file_name: str, use_a_star: bool) -> None:
+def main() -> None:
     """
     Main function
     :param file_name: name of file from which to read maze
     :return: None
     """
     os.system('cls' if os.name == 'nt' else 'clear')
+    use_a_star, file_name = parse()
     maze, points = extract_maze(read_file(file_name))
     points = random_points(points)
     if use_a_star:
@@ -221,4 +222,4 @@ def main(file_name: str, use_a_star: bool) -> None:
 
 
 if __name__ == "__main__":
-    main(arg_maze, arg_a_star)
+    main()
