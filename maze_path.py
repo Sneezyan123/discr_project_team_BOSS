@@ -40,7 +40,7 @@ def breadth_first_search(maze: list[list[str]], start_coord, finish_coord)\
     cycle = queue[-1]
     while queue:
         if cycle not in queue:
-            # time.sleep(.1)
+            time.sleep(.1)
             print_maze(maze, visited, [start_coord],
                        [item[0] for item in queue] + [finish_coord])
             cycle = queue[-1]
@@ -85,7 +85,7 @@ def a_star(maze: list[list[str]], start_coord: tuple[int, int], finish_coord: tu
         except IndexError:
             break
 
-        # time.sleep(.04)
+        time.sleep(.03)
         print_maze(maze, visited, [start_coord], path + [finish_coord])
 
         if coord == finish_coord:
@@ -181,7 +181,7 @@ def print_maze(maze: list[list[str]], path: list[tuple[int, int]], start: list[t
     :return: None
     """
     path = set(path)
-    # os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
     print('\033[200A\033[2K', end='')
     print('\n'.join([''.join(f'{RED}██{DEFAULT}' if (y, x) in start else
                              f'{RED}██{DEFAULT}' if (y, x) in end else
