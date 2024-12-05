@@ -181,7 +181,7 @@ def print_maze(maze: list[list[str]], path: list[tuple[int, int]], start: list[t
     :return: None
     """
     path = set(path)
-    os.system('cls' if os.name == 'nt' else 'clear')
+    # os.system('cls' if os.name == 'nt' else 'clear')
     print('\033[200A\033[2K', end='')
     print('\n'.join([''.join(f'{RED}██{DEFAULT}' if (y, x) in start else
                              f'{RED}██{DEFAULT}' if (y, x) in end else
