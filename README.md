@@ -22,17 +22,26 @@ By default, uses breadth first search(BFS), optionally can be changed to A*.
 > Artem Onyshchuk
 
 BFS algorithm can be used to find the shortest path between two points in graph or 2-dimensional matrix (our case).
+
 It explores each adjacent node step by step and stops when reaches final point.
 Program uses fundamental idea of queue, that works by principle: the first came - the first gone.
+
 Pseudocode looks like this:
 
 array visited // for writing all coordinates, that our algorithm visited before.
+
 array queue // for writing all coordinates, that we have to visit and all pathes from starting point to current one.
+
 while queue:
+
   coords, path = queue.pop(0) - for getting first element of array and removing it from queue
+  
   iterating by every possible direction, adding to queue if possible
+  
   if coordinates similar to finish coordinates - returning them.
+  
 return None // if path doesn't exist.
+
 
 
 
