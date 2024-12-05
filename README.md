@@ -35,7 +35,7 @@ The queue itself stores: priority, coordinates of the node, path from the starti
 ![alt text](image.png)
 
 
-
+> Ivan Zarytskyi
 #### ``parse()``
 Parses the input from the terminal
 #### ``read_file()``
